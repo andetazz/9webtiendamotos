@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-icons.min.css') }}">
+      <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='iconos/setud.ICO') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='iconos/setud.ICO') }}" type="image/x-icon">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <a href="https://wa.me/573045822360?text=Hola%20quiero%20más%20información%20sobre%20sus%20productos" class="whatsapp-float" target="_blank" title="Chatea por WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+    
+    <style>
+    .whatsapp-float {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #25D366;
+        color: white;
+        border-radius: 50%;
+        padding: 15px;
+        font-size: 24px;
+        z-index: 1000;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .whatsapp-float:hover {
+        background-color: #1ebe57;
+    }
+        body {
+            overflow-y: scroll;
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: black;
+            /* O el color que quieras */
+            border-radius: 50%;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: black;
+            /* O el color que quieras */
+            border-radius: 50%;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* Hace que todas las cards tengan la misma altura */
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+            border: 2px solid #08d9f5;
+            /* Borde negro */
+        }
+
+        .card p {
+            margin-bottom: 0px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            /* Efecto de zoom */
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+            padding: 0px;
+        }
+
+        /* 📸 Asegurar imágenes del mismo tamaño */
+        .fixed-img {
+            width: 100%;
+            height: 200px;
+            /* Fijar altura para todas las imágenes */
+            object-fit: cover;
+            /* Recorta la imagen sin deformarla */
+        }
+
+        .modal-backdrop {
+            background-color: rgba(114, 29, 224, 0.5) !important;
+            /* Ajustar el fondo oscuro */
+        }
+
+        body.modal-open {
+            padding-right: 0 !important;
+            /* Evita el cambio de tamaño de la página */
+        }
+
+        .carousel-item img {
+            height: 200px;
+            /* Ajusta la altura según tus necesidades */
+            object-fit: cover;
+        }
+
+        .btn-custom-orange {
+            background-color: #fff700eb;
+            /* Naranja personalizado */
+            color: rgb(0, 0, 0);
+            /* Texto en blanco */
+            border-radius: 12px;
+        }
+
+        .btn-custom-orange:hover {
+            background-color: #3f88c5;
+            /* Naranja más oscuro al pasar el mouse */
+            color: rgb(249, 247, 247);
+        }
+
+        .modal-header-reducido {
+            padding: 0PX;
+        }
+
+        /* Parpadeo suave para íconos con clase "carrito" */
+        @keyframes blinkIcon {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .nav-link.carrito i {
+            animation: blinkIcon 1.5s infinite;
+            color: #ffdd00;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'menu.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- Contenido principal con margen superior -->
+        <!-- Productos invitación -->
+
+        
+
+        <div class="container mt-4">
+            <div class="row">
+                <h2>
+                    {% if categoria_activa %}
+                    Productos de la categoría: {{ categoria_activa.nombre }}
+                    <a href="{{ url_for('auth.dashboard') }}" class="btn btn-outline-primary btn-sm ms-3">Ver todos los
+                        productos</a>
+                    {% else %}
+                    Nuestros Productos
+                    {% endif %}
+                </h2>
+                {% for producto in dataprod %}
+                <div class="col-md-3 d-flex align-items-stretch mb-4 px-2"> <!-- 6 columnas -->
+                    <div class="card shadow-sm w-100">
+                        <br>
+                        <img src="{{ url_for('static', filename='imagenes/' + producto.get_img('img1')) }}"
+                            alt="{{ producto.nombre }}" class="card-img-top mx-auto d-block"
+                            style="max-width: 250px; max-height: 250px; border: 5px solid #3f88c5; object-fit: contain; border-radius: 10px;">
+                        <div class="card-body d-flex flex-column text-center">
+                            <br>
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            {% if (producto.stock > 0) %}
+                                <p class="card-text text-muted">Categoría: {{ producto.categoria.nombre }}  stock: {{producto.stock}}</p>
+                            {% else %}
+                                <p class="card-text text-muted">
+                                    Categoría: {{ producto.categoria.nombre }}
+                                    <span style="color: red; text-decoration: underline;"> stock: {{ producto.stock }} No esta disponible</span>
+                                </p>
+                            {% endif %}
+                            {% if (producto.pordes > 0) %}
+                            <h4 class="text-primary">
+                                Nuevo Precio:
+                                ${{ "{:,.0f}".format((producto.precio - producto.descuento)).replace(",", ".") }}
+                            </h4>
+                            <h4 class="text-danger" style="text-decoration: line-through;">
+                                ${{ "{:,.0f}".format(producto.precio ).replace(",", ".") }}
+                            </h4>
+                            {% else %}
+                            <h4 class="text-primary">
+                                ${{ "{:,.0f}".format(producto.precio).replace(",", ".") }}
+                            </h4>
+                            {% endif %}
+
+                            <p class="card-text">{{ producto.descripcion }}</p>
+                            <p class="card-text"><strong> codigo:</strong> {{ producto.idproducto }}</p>
+                            {% if datausers.tipousu == 1 %}
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('productos.edit', id=producto.idproducto) }}"
+                                    class="btn btn-sm btn-custom-orange flex-fill mb-1">Editar</a>
+                                <a href="javascript:void(0);"
+                                    onclick="confirmarEliminacion('{{ producto.idproducto }}');"
+                                    class="btn btn-sm btn-danger flex-fill mb-1">Eliminar</a>
+                            </div>
+                            {% endif %}
+                            {% if (producto.stock > 0) %}
+                                <button type="button" class="btn-custom-orange mt-auto btn-sm btn-open-modal"
+                                    data-id="{{ producto.idproducto }}">
+                                    <i class="bi bi-cart"></i> Agregar al carrito
+                                </button>
+                            {% endif %}
+                             
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal vacío que se llenará con AJAX -->
+    <div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header modal-header-reducido">
+                    <h5 class="modal-title">Agregar al Carrito</h5>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+                </div>
+                <div class="modal-body">
+                    <div id="modal-content">
+                        <!-- Aquí se cargará addcarrito.html dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let modal = new bootstrap.Modal(document.getElementById("detalleModal"));
+
+            document.querySelectorAll(".btn-open-modal").forEach(button => {
+                button.addEventListener("click", function () {
+                    let idProducto = this.getAttribute("data-id");
+                    let modalBody = document.getElementById("modal-content");
+
+                    modalBody.innerHTML = "<p class='text-center'>Cargando...</p>";
+
+                    fetch(`/carrito/add/${idProducto}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            modalBody.innerHTML = data;
+                            modal.show();
+
+                            // Agregar evento al formulario dentro del modal
+                            let form = modalBody.querySelector("form");
+                            if (form) {
+                                form.addEventListener("submit", function (event) {
+                                    event.preventDefault(); // Evita que el formulario haga una recarga de página
+
+                                    let formData = new FormData(form);
+
+                                    fetch(form.action, {
+                                        method: "POST",
+                                        body: formData
+                                    })
+                                        .then(response => response.json())
+                                        .then(result => {
+                                            if (result.success) {
+                                                alert(result.message);
+                                                modal.hide();
+                                            } else {
+                                                alert("❌ Error al agregar al carrito");
+                                            }
+                                        })
+                                        .catch(error => console.error("Error:", error));
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error al cargar el modal:", error);
+                            modalBody.innerHTML = "<p class='text-center text-danger'>Error al cargar el producto.</p>";
+                        });
+                });
+            });
+
+           
+        });
+    </script>
+
+    <script>
+        document.addEventListener1("DOMContentLoaded", function () {
+            let botones = document.querySelectorAll('[data-bs-toggle="modal"]');
+
+            botones.forEach(boton => {
+                boton.addEventListener("click", function () {
+                    // Elimina backdrop adicionales antes de abrir un modal nuevo
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open'); // Elimina la clase que bloquea el scroll
+                });
+            });
+        });
+    </script>
+    <script>
+        function cambiarCantidad(valor) {
+            let input = document.getElementById("cantidadInput");
+            let cantidad = parseInt(input.value) || 1; // Asegura que sea un número
+
+            cantidad += valor;
+
+            if (cantidad < 1) {
+                cantidad = 1; // No permitir cantidades menores a 1
+            }
+
+            input.value = cantidad;
+        }
+
+    </script>
+
+    <script>
+        function confirmarEliminacion(idProducto) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción eliminará el producto permanentemente.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#3498db',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/productos/delete/${idProducto}`;
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body><!-- SweetAlert2 script -->
+
+</html>

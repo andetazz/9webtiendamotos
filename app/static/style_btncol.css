@@ -1,0 +1,34 @@
+
+.btn-custom-orange {
+    background-color: #fff700eb;
+    /* Naranja personalizado */
+    color: rgb(0, 0, 0);
+    /* Texto en blanco */
+    border-radius: 12px;
+}
+
+.btn-custom-orange:hover {
+    background-color: #3f88c5;
+    /* Naranja más oscuro al pasar el mouse */
+    color: rgb(249, 247, 247);
+}
+    /* Botón de cerrar sesión */
+    .btn-danger {
+        background-color: #d00000;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #e6440a;
+        color: rgb(249, 247, 247);
+    }
+    .input-invalido {
+        border: 5px solid red !important;
+    }
+
+    .input-valido {
+        border: 5px solid #28a745 !important;
+    }

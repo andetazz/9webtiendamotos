@@ -1,0 +1,136 @@
+{% extends "baseb.html" %}
+{% block titulo_pagina %}Editar producto {% endblock %}
+{% block content %}
+<form action="{{ url_for('productos.edit', id=Productodata.idproducto) }}" method="post" enctype="multipart/form-data">
+    <a class="btn btn-success btn-lg mb-3" href="{{ url_for('productos.index') }}">Regresar</a>
+    <div class="col-12 col-md-12 text-center mb-3">
+        <h2><label class="fw-bold">Datos del Productos</label><br></h2>
+    </div>
+    <div class="form-group mb-3">
+        <label for="nameUser" class="form-label">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ Productodata.nombre }}" required class="form-control">
+    </div>
+    <div class="form-group mb-3">
+        <label for="Stock" class="form-label">Stock:</label>
+        <input type="number" id="stock" name="stock" value="{{ Productodata.stock }}" required class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="name">Precio:</label>
+        <input type="number" class="precio form-control" id="precio" name="precio" value="{{ Productodata.precio | int }}" required>
+    </div>
+    <div class="form-group">
+        <label for="name">Porcentaje Descuento:</label>
+        <input type="number" class="pordes form-control" id="pordes" min="0" max="100" name="pordes" value="{{ Productodata.pordes | int }}" >
+    </div>
+    <div class="form-group">
+        <label for="name">Descuento:</label>
+        <input type="number" class="descuento form-control" id="descuento" name="descuento" value="{{ Productodata.descuento | int }}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="name">Iva:</label>
+        <input type="number" class="poriva form-control" min="0" max="100" id="poriva" name="poriva" value="{{ Productodata.iva | int }}">
+    </div>
+    <div class="form-group">
+        <label for="name">Descripcion:</label>
+        <input type="text" class="form-control" id="descripcion" value="{{ Productodata.descripcion }}"
+            name="descripcion">
+    </div>
+    <label for="categoria">Categoria:</label>
+    <select id="idcategoria" name="idcategoria" class="form-select rounded-pill">
+        {% for categoria in catdata %}
+        {% if categoria.idcategoria == Productodata.idcategoria %}
+        <option value="{{ categoria.idcategoria }}" selected>{{ categoria.nombre }}</option>
+        {%else%}
+        <option value="{{ categoria.idcategoria }}">{{ categoria.nombre }}</option>
+        {%endif%}
+        {% endfor %}
+    </select>
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-12 col-md-12 text-left mb-3">
+                <div class="col-12 col-md-12 text-center mb-3">
+                    <h2><label class="fw-bold">Imagenes del Productos</label><br></h2>
+                </div>
+                <!-- Imagen 1 -->
+                <label class="fw-bold">Imagen 1:</label><br>
+                {% if Productodata.img1 and Productodata.img1 != "productos.png" %}
+                <img src="{{ url_for('static', filename='imagenes/' + Productodata.img1) }}"
+                    style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5; object-fit: contain; border-radius: 5px;"
+                    alt="Imagen del producto">
+                {% else %}
+                <p>No hay imagen cargada.</p>
+                {% endif %}
+                <input type="file" id="img1" name="img1" accept="image/*" class="form-control btn btn-sm btn-warning mb-1"><br><br>
+                <!-- Imagen 2 -->
+                <label class="fw-bold">Imagen 2:</label><br>
+                {% if Productodata.img2 and Productodata.img2 != "productos.png" %}
+                <img src="{{ url_for('static', filename='imagenes/' + Productodata.img2) }}"
+                    style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5; object-fit: contain; border-radius: 5px;"
+                    alt="Imagen del producto">
+                {% else %}
+                <p>No hay imagen cargada.</p>
+                {% endif %}
+                <input type="file" id="img2" name="img2" accept="image/*" class="form-control btn btn-sm btn-warning mb-1"><br><br>
+                <!-- Imagen 3 -->
+                <label class="fw-bold">Imagen 3:</label><br>
+                {% if Productodata.img3 and Productodata.img3 != "productos.png" %}
+                <img src="{{ url_for('static', filename='imagenes/' + Productodata.img3) }}"
+                    style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5 ; object-fit: contain; border-radius: 5px;"
+                    alt="Imagen del producto">
+
+                {% else %}
+                <p>No hay imagen cargada.</p>
+                {% endif %}
+                <input type="file" id="img3" name="img3" accept="image/*" class="form-control btn btn-sm btn-warning mb-1"><br><br>
+                <!-- Imagen 4 -->
+                <label class="fw-bold">Imagen 4:</label><br>
+                {% if Productodata.img4 and Productodata.img4 != "productos.png" %}
+                <img src="{{ url_for('static', filename='imagenes/' + Productodata.img4) }}"
+                    style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5 ; object-fit: contain; border-radius: 5px;"
+                    alt="Imagen del producto">
+                {% else %}
+                <p>No hay imagen cargada.</p>
+                {% endif %}
+                <input type="file" id="img4" name="img4" accept="image/*" class="form-control btn btn-sm btn-warning mb-1"><br><br>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary lex-fill btn-lg mb-3">Actualizar Producto</button>
+        <a class="btn btn-success lex-fill btn-lg mb-3" href="{{ url_for('productos.index') }}">Cancelar</a>
+    </div>
+</form>
+<script>
+    function calcularDescuento() {
+     const precioInput = document.getElementById("precio");
+     const pordesInput = document.getElementById("pordes");
+     const porivaInput = document.getElementById("poriva"); // este es el ID correcto
+     const descuentoInput = document.getElementById("descuento");
+ 
+     let precio = parseFloat(precioInput.value) || 0;
+     let porcentaje = parseFloat(pordesInput.value) || 0;
+     let porcentajeiva = parseFloat(porivaInput.value) || 0;
+ 
+     // Asegurar que estén entre 0 y 100
+     if (porcentaje < 0) porcentaje = 0;
+     if (porcentaje > 100) porcentaje = 100;
+     pordesInput.value = porcentaje;
+ 
+     if (porcentajeiva < 0) porcentajeiva = 0;
+     if (porcentajeiva > 100) porcentajeiva = 100;
+     porivaInput.value = porcentajeiva;
+ 
+     let descuento = (precio * porcentaje) / 100;
+     descuentoInput.value = descuento.toFixed(0);
+ }
+ 
+     // Escucha cambios en el campo porcentaje de descuento
+     document.getElementById("pordes").addEventListener("input", calcularDescuento);
+ 
+     // Escucha cambios en el campo porcentaje de descuento
+     document.getElementById("poriva").addEventListener("input", calcularDescuento);
+ 
+     // También puedes hacerlo opcional si cambia el precio
+     document.getElementById("precio").addEventListener("input", calcularDescuento);
+ </script>
+{% endblock %}

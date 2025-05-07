@@ -1,0 +1,198 @@
+{% extends "baseb.html" %}
+
+{% block titulo_pagina %}Administrador de Usuario{% endblock %}
+
+{% block style %}
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 500px;
+        background-color: #1e2b47;
+        color: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-control,
+    .form-select {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+  
+    .button1 {
+        display: block;
+        text-align: center;
+        background-color: #dc3545;
+        color: white;
+        text-decoration: none;
+        border: none;
+    }
+
+    #mensaje {
+        margin-bottom: 10px;
+    }
+    .input-invalido {
+        border: 5px solid red !important;
+    }
+
+    .input-valido {
+        border: 5px solid #28a745 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fondo-login d-flex justify-content-center align-items-center min-vh-100">
+    <div class="login-card">
+        <form action="{{ url_for('users.edit', id=datauser.iduser) }}" method="post" onsubmit="return validarFormulario()" enctype="multipart/form-data">
+            <div class="text-center mb-4">
+                <h2>Editar Usuario</h2>
+            </div>
+
+            <div id="mensaje" class="text-warning small" style="display:none;"></div>
+
+            <div class="mb-3">
+                <label for="nameuser" class="form-label">Nombre de Usuario:</label>
+                <input type="text" id="nameuser" name="nameuser" class="form-control" value="{{ datauser.nameuser }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre Completo:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ datauser.nombre }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="claveuser" class="form-label">Contraseña:</label>
+                <input type="password" id="claveuser" name="claveuser" class="form-control" value="{{ datauser.passworduser }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="vclaveuser" class="form-label">Verifique su Contraseña:</label>
+                <input type="password" id="vclaveuser" name="vclaveuser" class="form-control" value="{{ datauser.passworduser }}" required oninput="validarconcidencia(this)">
+            </div>
+
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input type="text" name="telefono" class="form-control" value="{{ datauser.telefono }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="cedula" class="form-label">Cédula:</label>
+                <input type="text" name="cedula" class="form-control" value="{{ datauser.cedula }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo:</label>
+                <input type="email" name="correo" class="form-control" value="{{ datauser.correo }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="img1" class="form-label">Imagen de Perfil:</label>
+                <input type="file" id="img1" name="img1" class="form-control" accept="image/*">
+            </div>
+
+            <div class="mb-4">
+                <label for="tipousu" class="form-label">Tipo de Usuario:</label>
+                <select id="tipousu" name="tipousu" class="form-select">
+                    <option value=1 {% if datauser.tipousu==1 %} selected {%endif%}>Administrador</option>
+                    <option value=2 {% if datauser.tipousu==2 %} selected {%endif%}>Cliente</option>
+                    <option value=3 {% if datauser.tipousu==3 %} selected {%endif%}>Proveedor</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary lex-fill btn-lg mb-3" type="submit">Actualizar Usuario</button>
+            <a class="btn  btn-success lex-fill btn-lg mb-3" href="{{ url_for('users.index') }}">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validarconcidencia(input) {
+        const mensajeDiv = document.getElementById("mensaje");
+        if (input.value !== document.getElementById('claveuser').value) {
+            mensajeDiv.innerText = "Las contraseñas no coinciden.";
+            mensajeDiv.style.display = "block";
+            input.setCustomValidity('Las contraseñas no coinciden.');
+        } else {
+            mensajeDiv.innerText = "";
+            mensajeDiv.style.display = "none";
+            input.setCustomValidity('');
+        }
+    }
+
+    function validarFormulario() {
+        const clave = document.getElementById('claveuser').value;
+        const verificarClave = document.getElementById('vclaveuser').value;
+
+        if (clave !== verificarClave) {
+            alert("Las contraseñas no coinciden.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+        const campos = this.querySelectorAll("input[required], select[required]");
+        let valido = true;
+
+        campos.forEach(function (campo) {
+            // Elimina clases anteriores
+            campo.classList.remove("input-invalido", "input-valido");
+
+            if (!campo.checkValidity()) {
+                campo.classList.add("input-invalido");
+                valido = false;
+            } else {
+                campo.classList.add("input-valido");
+            }
+        });
+
+        if (!valido) {
+            event.preventDefault(); // Detiene el envío
+            alert("Por favor, completa todos los campos obligatorios.");
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll("input[required], select[required]").forEach(function (campo) {
+        campo.addEventListener("input", function () {
+            // Elimina clases anteriores
+            campo.classList.remove("input-invalido", "input-valido");
+
+            if (!campo.checkValidity()) {
+                campo.classList.add("input-invalido");
+            } else {
+                campo.classList.add("input-valido");
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("input[required], select[required]").forEach(function (campo) {
+            // Aplica estilos al cargar según su validez
+            if (!campo.checkValidity()) {
+                campo.classList.add("input-invalido");
+            } else {
+                campo.classList.add("input-valido");
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}

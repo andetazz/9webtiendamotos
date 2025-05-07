@@ -1,0 +1,19 @@
+<!-- templates/carrito/mostrar_qr.html -->
+{% extends "baseb.html" %}
+{% block content %}
+  <div class="text-center my-5">
+    <h4>Factura #{{ venta_id }}</h4>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <p>Escanea este QR con Nequi:</p>
+    <img src="data:image/png;base64,{{ qr_b64 }}" alt="QR de pago Nequi" />
+    <br>
+    <a href="{{ url_for('carrito.vercompras') }}" class="btn btn-secondary mt-3">Volver a Compras</a>
+  </div>
+{% endblock %}

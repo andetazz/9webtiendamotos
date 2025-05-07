@@ -1,0 +1,75 @@
+{% extends "baseb.html" %}
+{% block titulo_pagina %}Lista de Usuarios{% endblock %}
+<style>
+    
+    .tabla-scroll {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .tabla-scroll thead th {
+        position: sticky;
+        top: 0;
+        background-color: #343a40;
+        /* mismo color que table-dark */
+        color: white;
+        z-index: 10;
+    }
+
+    .img-perfil {
+        max-width: 80px;
+        height: auto;
+        border-radius: 5px;
+        border: 2px solid #3f88c5;
+        object-fit: contain;
+    }
+</style>
+
+
+{% block content %}
+<div class="container mt-3 mb-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <a class="btn btn-primary btn-lg mb-3" href="{{ url_for('users.add') }}">Agregar Usuario</a>
+                <a class="btn btn-success btn-lg mb-3" href="{{ url_for('auth.dashboard') }}">Regresar</a>
+            </div>
+            <div class="table-responsive">
+                <div class="tabla-scroll">
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Clave</th>
+                                <th>Imagen Perfil</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usuario in data %}
+                            <tr>
+                                <td>{{ usuario.iduser }}</td>
+                                <td>{{ usuario.nameuser }}</td>
+                                <td>{{ usuario.passworduser }}</td>
+                                <td>
+                                    <img src="{{ url_for('static', filename='imagenes/' + usuario.get_img('imgper')) }}"
+                                        alt="Imagen del Usuario" class="img-thumbnail"
+                                        style="max-width: 80px; height: auto;">
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('users.edit', id=usuario.iduser) }}"
+                                        class="btn btn-warning btn-custom-orange flex-fill mb-1">Editar</a>
+                                    <a href="{{ url_for('users.delete', id=usuario.iduser) }}"
+                                        class="btn btn-danger btn-danger flex-fill mb-1">Eliminar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

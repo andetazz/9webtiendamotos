@@ -1,0 +1,76 @@
+{% extends "baseb.html" %}
+{% block titulo_pagina %}Lista de Productos{% endblock %}
+
+{% block content %}
+
+<a class="btn btn-primary btn-lg mb-3" href="{{ url_for('productos.add') }}">Agregar Producto</a>
+<a class="btn btn-success btn-lg mb-3" href="{{ url_for('auth.dashboard') }}">Regresar</a>
+
+<div class="col-12 text-center mb-3">
+    <h2 class="fw-bold">Datos del Producto</h2>
+</div>
+
+<!-- Aquí agregamos el contenedor responsive -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Imagen</th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th><strong>Precio</strong></th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in data %}
+            <tr>
+                <td>
+                    <img src="{{ url_for('static', filename='imagenes/' + producto.get_img('img1')) }}"
+                         style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5 ; object-fit: contain; border-radius: 5px;"
+                         alt="Imagen del producto">
+                </td>
+                <td>{{ producto.idproducto }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td class="text-wrap" style="max-width: 200px;">{{ producto.descripcion }}</td>
+                <td>{{ producto.categoria.nombre }}</td>
+                <td>${{ "{:,.0f}".format(producto['precio']).replace(",", ".") }}</td>
+                <td>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('productos.edit', id=producto.idproducto) }}" 
+                        class="btn btn-sm btn-custom-orange flex-fill mb-1">Editar
+                    </a>
+                    <a href="javascript:void(0);"
+                       onclick="confirmarEliminacion('{{ producto.idproducto }}');"
+                       class="btn btn-sm btn-danger flex-fill mb-1">Eliminar</a>
+                </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function confirmarEliminacion(idProducto) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará el producto permanentemente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#3498db',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/productos/delete/${idProducto}`;
+            }
+        });
+    }
+</script>
+<!-- SweetAlert2 script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

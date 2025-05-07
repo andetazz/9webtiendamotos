@@ -1,0 +1,61 @@
+{% extends "baseb.html" %}
+{% block titulo_pagina %}Lista de Categorias{% endblock %}
+{% block content %}
+<a class="btn btn-primary btn-lg mb-3" href="{{ url_for('categorias.add') }}">Agregar Categoria</a>
+<a class="btn btn-success btn-lg mb-3" href="{{ url_for('auth.dashboard') }}">Regresar</a>
+<!-- Aquí agregamos el contenedor responsive -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <tr>
+            <th>ID</th>
+            <th>nombre</th>
+            <th>imgen</th>
+            <th>Acciones</th>
+        </tr>
+        {% for categoria in data %}
+        <tr>
+       
+            <td>{{ categoria.idcategoria }}</td>
+            <td>{{ categoria.nombre }}</td>
+            <td>
+                <img src="{{ url_for('static', filename='imagenes/' + categoria.get_img('img1')) }}"
+                     style="max-width: 100px; max-height: 100px; border: 2px solid #3f88c5 ; object-fit: contain; border-radius: 5px;"
+                     alt="Imagen de la Categoria">
+            </td>
+            <td>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('categorias.edit', id=categoria.idcategoria) }}" class="btn btn-sm btn-custom-orange flex-fill mb-1">Editar</a>
+                    <a href="javascript:void(0);"
+                       onclick="confirmarEliminacion('{{ categoria.idcategoria }}');"
+                       class="btn btn-sm btn-danger flex-fill mb-1">Eliminar
+                    </a>
+                </div>
+                {# <a href="{{ url_for('departamentos.list', id=depart.idDepartment) }}">Listar Categorias</a>
+                #}
+                <!-- Agrega aquí el enlace para eliminar -->
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<script>
+    function confirmarEliminacion(idcategoria) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará la Categoria permanentemente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#3498db',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/categorias/delete/${idcategoria}`;
+            }
+        });
+    }
+</script>
+
+{% endblock %}

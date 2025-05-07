@@ -1,0 +1,182 @@
+{% extends "baseb.html" %}
+
+{% block titulo_pagina %}Administrador de Usuario{% endblock %}
+
+{% block style %}
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 500px;
+        background-color: #1e2b47;
+        color: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-control,
+    .form-select {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .form-label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    button[type="submit"],
+    .button1 {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .button1 {
+        display: block;
+        text-align: center;
+        background-color: #dc3545;
+        color: white;
+        text-decoration: none;
+        border: none;
+    }
+
+    #mensaje {
+        margin-bottom: 10px;
+    }
+  
+        /* Ajuste por defecto: tamaño base para móviles */
+        .form-control,
+        .form-select {
+            font-size: 14px;
+            padding: 8px 10px;
+        }
+    
+        /* En pantallas medianas (≥768px) */
+        @media (min-width: 768px) {
+            .form-control,
+            .form-select {
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+        }
+    
+        /* En pantallas grandes (≥992px) */
+        @media (min-width: 992px) {
+            .form-control,
+            .form-select {
+                font-size: 18px;
+                padding: 14px 18px;
+            }
+        }    
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fondo-login d-flex justify-content-center align-items-center min-vh-100">
+    <div class="login-card">
+        <form action="{{ url_for('users.add') }}" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
+            <div id="mensaje" class="text-warning small" style="display:none;"></div>
+            <div class="col-12 col-md-12 text-center mb-3">
+                <h2><label class="fw-bold">Agregar Usuario</label><br></h2>
+            </div>
+            <div class="mb-3">
+                <label for="nombre" class="fw-bold">
+                    Nombre de Usuario:
+                </label>
+                <input type="text" id="nombre" name="nameuser" class="form-control" placeholder="Nombre de usuario" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="claveuser" class="fw-bold">
+                    Contraseña:
+                </label>
+                <input type="password" id="claveuser" name="claveuser" class="form-control" placeholder="Contraseña" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="vclaveuser" class="fw-bold" >
+                    Verifique su contraseña:
+                </label>
+                <input type="password" id="vclaveuser" name="vclaveuser" class="form-control" placeholder="Repite la contraseña" required oninput="validarconcidencia(this)">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nombre completo:</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Nombre completo del usuario">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Teléfono:</label>
+                <input type="text" name="telefono" class="form-control" placeholder="Teléfono">
+            </div>
+
+            <div class="mb-3">
+                <label for="ced" class="fw-bold" >
+                    Cédula:
+                </label>
+                <input type="text" name="cedula" class="form-control" placeholder="Cédula" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Correo:</label>
+                <input type="text" name="correo" class="form-control" placeholder="Correo electrónico">
+            </div>
+
+            <div class="mb-3">
+                <label for="img1" class="form-label">Imagen de Perfil:</label>
+                <input type="file" id="img1" name="img1" class="form-control" accept="image/*">
+            </div>
+
+            <div class="mb-3">
+                <label for="tipousu" class="fw-bold">
+                    Tipo de Usuario:
+                </label>
+                <select id="tipousu" name="tipousu" class="form-select">
+                    <option value="1">Administrador</option>
+                    <option value="2">Cliente</option>
+                    <option value="3">Proveedor</option>
+                </select>
+            </div>
+
+            <button class = "btn btn-primary lex-fill btn-lg mb-3" type="submit">Agregar Usuario</button>
+            <a class="btn  btn-success lex-fill btn-lg mb-3" href="{{ url_for('users.index') }}">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validarconcidencia(input) {
+        const mensajeDiv = document.getElementById("mensaje");
+        if (input.value !== document.getElementById('claveuser').value) {
+            mensajeDiv.innerText = "Las contraseñas no coinciden.";
+            mensajeDiv.style.display = "block";
+            input.setCustomValidity('Las contraseñas no coinciden.');
+        } else {
+            mensajeDiv.innerText = "";
+            mensajeDiv.style.display = "none";
+            input.setCustomValidity('');
+        }
+    }
+
+    function validarFormulario() {
+        const clave = document.getElementById('claveuser').value;
+        const verificarClave = document.getElementById('vclaveuser').value;
+
+        if (clave !== verificarClave) {
+            alert("Las contraseñas no coinciden.");
+            return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}

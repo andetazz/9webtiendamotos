@@ -1,0 +1,118 @@
+{% extends "baseb.html" %}
+
+{% block titulo_pagina %}Registro Nuevo Usuario{% endblock %}
+
+{% block style %}
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .fondo-login {
+        background-image: url("{{ url_for('static', filename='fondos/Tema2CA.png') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 0 !important;
+    }
+
+    .min-vh-100 {
+        min-height: 100vh !important;
+    }
+
+    .d-flex.justify-content-center.align-items-center.min-vh-100.py-5 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        background-color: #1e2b47;
+        color: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="fondo-login d-flex justify-content-center align-items-center">
+    <div class="login-card">
+        <div class="form-container">
+            <div id="mensaje" class="text-warning small mt-1" style="display:none;"></div>
+            <h2><i class="fas fa-user-plus"></i> Crear Cuenta</h2>
+            <p class="text-center text-muted mb-4">Completa tus datos para registrarte</p>
+            <form action="{{ url_for('auth.add') }}" method="post" onsubmit="return validarFormulario()">
+              
+                <div class="mb-3">
+                    <label for="nombre"><i class="fas fa-user"></i> Nombre Completo</label>
+                    <input type="text" class="form-control" id="nombre" name="nameuser" placeholder="Tu nombre completo"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="claveuser"><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" class="form-control" id="claveuser" name="claveuser"
+                        placeholder="Mínimo 4 caracteres" requireds">
+                </div>
+                <div class="mb-3">
+                    <label for="vclaveuser">Verifique su Contraseña:</label>
+                    <input type="password" class="form-control" id="vclaveuser" name="vclaveuser"
+                        placeholder="verifique su contraseña" required oninput="validarconcidencia()">
+                    <div id="mensaje" class="text-warning small mt-1" style="display:none;"></div>
+                </div>
+
+                <button type="submit" id="botonCrear" class="btn btn-primary btn-block" disabled>
+                    <i class="fas fa-user-plus"></i> Crear Cuenta
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="{{ url_for('auth.login') }}" class="text-light">¿Ya tienes una cuenta? Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function validarconcidencia() {
+        const clave = document.getElementById('claveuser').value;
+        const vclave = document.getElementById('vclaveuser').value;
+        const mensajeDiv = document.getElementById('mensaje');
+        const boton = document.getElementById('botonCrear');
+
+        if (clave !== vclave) {
+            mensajeDiv.innerText = "Las contraseñas no coinciden.";
+            mensajeDiv.style.display = "block";
+            boton.disabled = true;
+        } else {
+            mensajeDiv.innerText = "";
+            mensajeDiv.style.display = "none";
+            boton.disabled = false;
+        }
+    }
+
+    function validarFormulario() {
+        const clave = document.getElementById('claveuser').value;
+        const verificarClave = document.getElementById('vclaveuser').value;
+
+        if (clave !== verificarClave || clave.length < 4) {
+            alert("Las contraseñas no coinciden o no tienen al menos 4 caracteres.");
+            return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}
